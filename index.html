@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Bar Chart</title>
+	<style type="text/css">
+		body {
+			font-family: Arial, Helvetica, sans-serif;
+			font-size: 16px;
+			background-color: #f2f2f2;
+			margin: 0;
+			padding: 0;
+		}
+		.container {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 20px;
+		}
+		.chart-container {
+			width: 100%;
+			height: 600px;
+			margin-bottom: 50px;
+			position: relative;
+		}
+		.chart-container canvas {
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+		.chart-title {
+			font-size: 24px;
+			font-weight: bold;
+			margin-bottom: 30px;
+		}
+		@media only screen and (max-width: 768px) {
+			.chart-container {
+				height: 400px;
+			}
+			.chart-title {
+				font-size: 16px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1 class="chart-title">Bar Chart</h1>
+		<div class="chart-container">
+			<canvas id="bar-chart"></canvas>
+		</div>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script type="text/javascript">
+		/* =============== DATA =============== */
+		var data = {
+			labels: [],
+			datasets: [
+				{
+					label: "Bar Chart",
+					backgroundColor: "rgba(54, 162, 235, 0.2)",
+					borderColor: "rgba(54, 162, 235, 1)",
+					borderWidth: 1,
+					data: []
+				}
+			]
+		};
+	/* =============== CHART OPTIONS =============== */
+	var options = {
+		responsive: true,
+		maintainAspectRatio: false,
+		legend: {
+			position: 'top'
+		},
+		title: {
+			display: false
+		},
+		scales: {
+			yAxes: [{
+				ticks: {
+					beginAtZero:true
+				}
+			}]
+		}
+	};
+
+	/* =============== GET DATA FROM CSV =============== */
+	var url = "data.csv";
+	Papa.parse(url, {
+		download: true,
+		delimiter: ",",
+		header: true,
+		complete: function(results) {
+			var rows = results.data;
+			console.log(rows);
+			rows.forEach(function(row) {
+				data.labels.push(row.Label);
+				data.datasets[0].data.push(row.Value);
+			});
+			var ctx = document.getElementById("bar-chart").getContext("2d");
+			var barChart = new Chart(ctx, {
+				type: 'bar',
+				data: data,
+				options: options
+			});
+		}
+	});
+
+</script</html>
